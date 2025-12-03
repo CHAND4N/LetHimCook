@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home - MealMate{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="hero-image">
+        <img src="{% static 'images/hero.png' %}" alt="Hero Image">
+    </div>
+    <div class="hero-content">
+        <h1 class="hero-heading">Food That Feels Like Home.</h1>
+        <p class="hero-subtext">Experience flavors crafted with love and tradition.</p>
+        <p class="hero-longtext">
+            From fresh ingredients to time-honored recipes, our dishes are designed to bring comfort, joy, and a sense of belonging to every meal. Join us on a culinary journey that feels both familiar and extraordinary.
+        </p>
+        <div class="hero-buttons">
+            <a href="/explore" class="btn btn-primary">Explore</a>
+            <a href="/about" class="btn btn-secondary">About Us</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

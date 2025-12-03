@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} - MealMate{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/main.css' %}">
+<style>
+    .image-preview {
+        margin-top: 1rem;
+        max-width: 300px;
+    }
+    
+    .image-preview img {
+        width: 100%;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>{{ title }}</h2>
+    <p style="color: #666; margin-bottom: 1.5rem;">
+        Restaurant: <strong>{{ restaurant.name }}</strong>
+    </p>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <div style="color: #dc3545; font-size: 0.875rem; margin-top: 0.25rem;">
+                        {{ field.errors }}
+                    </div>
+                {% endif %}
+                {% if field.help_text %}
+                    <small style="color: #666; font-size: 0.875rem; display: block; margin-top: 0.25rem;">
+                        {{ field.help_text }}
+                    </small>
+                {% endif %}
+                {% if field.name == 'image' and dish and dish.image %}
+                    <div class="image-preview">
+                        <p style="margin-bottom: 0.5rem; font-weight: 600;">Current Image:</p>
+                        <img src="{{ dish.image.url }}" alt="Current image">
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        
+        {% if form.non_field_errors %}
+            <div style="color: #dc3545; margin-bottom: 1rem;">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a href="{% url 'main:restaurant_detail' restaurant.id %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

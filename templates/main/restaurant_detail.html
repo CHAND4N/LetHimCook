@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ restaurant.name }} - MealMate{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/main.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="restaurant-detail">
+    <div class="restaurant-detail-header">
+        <div class="restaurant-detail-image-section">
+            {% if restaurant.image %}
+                <img src="{{ restaurant.image.url }}" alt="{{ restaurant.name }}" class="restaurant-detail-image">
+            {% else %}
+                <div class="restaurant-detail-image-placeholder">
+                    <span>No Image</span>
+                </div>
+            {% endif %}
+        </div>
+        <div class="restaurant-detail-info-section">
+            <h1>{{ restaurant.name }}</h1>
+            <div class="cuisine-badges">
+                {% for cuisine in restaurant.cuisines.all %}
+                    <span class="cuisine-badge">{{ cuisine.name }}</span>
+                {% empty %}
+                    <span class="cuisine-badge">No cuisines</span>
+                {% endfor %}
+            </div>
+            {% if can_edit %}
+                <div class="action-buttons">
+                    <a href="{% url 'main:update_restaurant' restaurant.id %}" class="btn btn-outline">Update Restaurant</a>
+                    <a href="{% url 'main:delete_restaurant' restaurant.id %}" class="btn btn-danger">Delete Restaurant</a>
+                    <a href="{% url 'main:add_dish' restaurant.id %}" class="btn btn-primary">Add Dish</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="restaurant-description">
+        <p>{{ restaurant.description }}</p>
+    </div>
+
+    <div class="restaurant-info">
+        <div class="info-item">
+            <label>Opening Time</label>
+            <p>{{ restaurant.opening_time }}</p>
+        </div>
+        <div class="info-item">
+            <label>Closing Time</label>
+            <p>{{ restaurant.closing_time }}</p>
+        </div>
+        <div class="info-item">
+            <label>Owner</label>
+            <p>{{ restaurant.owner.username }}</p>
+        </div>
+        <div class="info-item">
+            <label>Total Dishes</label>
+            <p>{{ dishes.count }}</p>
+        </div>
+    </div>
+
+    {% if restaurant.iframe_location %}
+        <div class="restaurant-map">
+            {{ restaurant.iframe_location|safe }}
+        </div>
+    {% endif %}
+</div>
+
+<div>
+    <h2 style="font-family: 'Playfair Display', serif; color: #2c3e50; margin-bottom: 1rem;">Menu</h2>
+    
+    {% if dishes %}
+        <div class="dish-grid">
+            {% for dish in dishes %}
+                <div class="dish-card">
+                    {% if dish.image %}
+                        <img src="{{ dish.image.url }}" alt="{{ dish.name }}" class="dish-image">
+                    {% else %}
+                        <div class="dish-image-placeholder">
+                            <span>No Image</span>
+                        </div>
+                    {% endif %}
+                    <div class="dish-card-body">
+                        <h3>{{ dish.name }}</h3>
+                        <p>{{ dish.description|truncatewords:15 }}</p>
+                        <div class="dish-price">${{ dish.price }}</div>
+                        {% if can_edit %}
+                            <div class="dish-actions">
+                                <a href="{% url 'main:update_dish' dish.id %}" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Update</a>
+                                <a href="{% url 'main:delete_dish' dish.id %}" class="btn btn-danger" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Delete</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <h3>No Dishes Yet</h3>
+            <p>Start building your menu by adding dishes!</p>
+            {% if can_edit %}
+                <a href="{% url 'main:add_dish' restaurant.id %}" class="btn btn-primary">Add First Dish</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

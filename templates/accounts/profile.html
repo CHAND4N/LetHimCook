@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Profile - MealMate{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <h2>My Profile</h2>
+    
+    <div class="profile-info">
+        <label>Username:</label>
+        <p>{{ user.username }}</p>
+    </div>
+    
+    <div class="profile-info">
+        <label>Email:</label>
+        <p>{{ user.email }}</p>
+    </div>
+    
+    {% if user.profile %}
+        <div class="profile-info">
+            <label>Phone Number:</label>
+            <p>{{ user.profile.phone_number }}</p>
+        </div>
+        
+        <div class="profile-info">
+            <label>Role:</label>
+            <p>{{ user.profile.get_role_display }}</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

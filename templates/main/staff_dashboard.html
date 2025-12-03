@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Staff Dashboard - MealMate{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/main.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h1>My Restaurants</h1>
+    <a href="{% url 'main:create_restaurant' %}" class="btn btn-primary">Create Restaurant</a>
+</div>
+
+{% if restaurants %}
+    <div class="restaurant-grid">
+        {% for restaurant in restaurants %}
+            <div class="restaurant-card">
+                {% if restaurant.image %}
+                    <img src="{{ restaurant.image.url }}" alt="{{ restaurant.name }}" class="restaurant-card-image">
+                {% else %}
+                    <div class="restaurant-card-image-placeholder">
+                        <span>No Image</span>
+                    </div>
+                {% endif %}
+                <div class="restaurant-card-header">
+                    <h3>{{ restaurant.name }}</h3>
+                    <div class="cuisine-badges">
+                        {% for cuisine in restaurant.cuisines.all %}
+                            <span class="cuisine-badge">{{ cuisine.name }}</span>
+                        {% empty %}
+                            <span class="cuisine-badge">No cuisines</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="restaurant-card-body">
+                    <p>{{ restaurant.description|truncatewords:20 }}</p>
+                </div>
+                <div class="restaurant-card-footer">
+                    <span>{{ restaurant.opening_time }} - {{ restaurant.closing_time }}</span>
+                    <span>{{ restaurant.dishes.count }} dishes</span>
+                </div>
+                <div class="restaurant-card-actions">
+                    <a href="{% url 'main:restaurant_detail' restaurant.id %}" class="btn btn-primary">View</a>
+                    {% if restaurant.owner == user or user.is_superuser %}
+                        <a href="{% url 'main:update_restaurant' restaurant.id %}" class="btn btn-outline">Update</a>
+                        <a href="{% url 'main:delete_restaurant' restaurant.id %}" class="btn btn-danger">Delete</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <h3>No Restaurants Yet</h3>
+        <p>Get started by creating your first restaurant!</p>
+        <a href="{% url 'main:create_restaurant' %}" class="btn btn-primary">Create Restaurant</a>
+    </div>
+{% endif %}
+{% endblock %}
