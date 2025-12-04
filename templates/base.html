@@ -22,7 +22,13 @@
             <a href="/">MealMate</a>
         </div>
         <div class="navbar-center">
+            {% if user.profile.role == 'staff' %}
+                <a href="{% url 'main:staff_dashboard' %}">Dashboard</a>
+            {% elif user.is_superuser %}
+                <a href="{% url 'main:admin_restaurants' %}">Admin</a>
+            {% else %}
             <a href="/">Home</a>
+            {% endif %}
             <a href="/explore">Explore</a>
             <a href="/about">About Us</a>
         </div>

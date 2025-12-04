@@ -29,9 +29,10 @@ def signup_view(request):
     return render(request, 'accounts/signup.html', {'form': form})
 
 
+from django.contrib.auth.models import User
+
 def login_view(request):
     if request.user.is_authenticated:
-        # Redirect based on role
         if request.user.is_superuser or (hasattr(request.user, 'profile') and request.user.profile.role == 'staff'):
             return redirect('main:staff_dashboard')
         return redirect('main:home')
@@ -39,13 +40,28 @@ def login_view(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data.get('username')
+            username_or_email = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
+
+            # ---- Allow login with username OR email ----
+            if '@' in username_or_email:
+                # treat it as email
+                try:
+                    user_obj = User.objects.get(email=username_or_email)
+                    username = user_obj.username
+                except User.DoesNotExist:
+                    username = None
+            else:
+                # treat it as normal username
+                username = username_or_email
+            # --------------------------------------------
+
             user = authenticate(request, username=username, password=password)
+
             if user is not None:
                 login(request, user)
-                messages.success(request, f'Welcome back, {username}!')
-                # Redirect based on role
+                messages.success(request, f'Welcome back, {user.username}!')
+                
                 if user.is_superuser or (hasattr(user, 'profile') and user.profile.role == 'staff'):
                     return redirect('main:staff_dashboard')
                 return redirect('main:home')
@@ -55,6 +71,7 @@ def login_view(request):
         form = LoginForm()
     
     return render(request, 'accounts/login.html', {'form': form})
+
 
 
 @login_required

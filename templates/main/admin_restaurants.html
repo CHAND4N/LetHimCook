@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}All Restaurants - Admin{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/admin_restaurants.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="restaurants-container">
+    <h1>All Restaurants</h1>
+    <div class="restaurant-grid">
+        {% for restaurant in restaurants %}
+        <div class="restaurant-card">
+            <a href="{% url 'main:restaurant_detail' restaurant.id %}" class="card-link">
+                {% if restaurant.image %}
+                    <img src="{{ restaurant.image.url }}" alt="{{ restaurant.name }}">
+                {% else %}
+                    <div class="placeholder">No Image</div>
+                {% endif %}
+                <h3>{{ restaurant.name }}</h3>
+            </a>
+            <div class="restaurant-info">
+                <p><strong>Open:</strong> {{ restaurant.opening_time }} &nbsp; <strong>Close:</strong> {{ restaurant.closing_time }}</p>
+                <p><strong>Location:</strong> {{ restaurant.location|default:"N/A" }}</p>
+                <p class="cuisines">
+                    {% with restaurant.cuisines.all as all_cuisines %}
+                        {% for cuisine in all_cuisines|slice:":3" %}
+                            <span class="cuisine-badge">{{ cuisine.name }}</span>
+                        {% endfor %}
+                        {% if all_cuisines|length > 3 %}
+                            <span class="cuisine-badge">+{{ all_cuisines|length|add:"-3" }} more</span>
+                        {% endif %}
+                    {% endwith %}
+                </p>
+            </div>
+            
+            <div class="card-actions">
+                <a href="{% url 'main:update_restaurant' restaurant.id %}" class="btn btn-outline">Update</a>
+                <a href="{% url 'main:delete_restaurant' restaurant.id %}" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

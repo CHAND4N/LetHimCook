@@ -9,10 +9,19 @@ class RestaurantForm(forms.ModelForm):
         required=False,
         help_text="Select one or more cuisines"
     )
+
+    new_cuisines = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Add new cuisines (comma separated)'}),
+        label="Add New Cuisines"
+    )
     
     class Meta:
         model = Restaurant
-        fields = ['name', 'description', 'opening_time', 'closing_time', 'iframe_location', 'image', 'cuisines']
+        fields = [
+            'name', 'description', 'opening_time', 'closing_time',
+            'iframe_location', 'image', 'cuisines', 'new_cuisines', 'featured', 'location'
+        ]
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Restaurant Name'}),
             'description': forms.Textarea(attrs={'class': 'form-input', 'rows': 4, 'placeholder': 'Describe your restaurant...'}),
@@ -20,6 +29,8 @@ class RestaurantForm(forms.ModelForm):
             'closing_time': forms.TimeInput(attrs={'class': 'form-input', 'type': 'time'}),
             'iframe_location': forms.Textarea(attrs={'class': 'form-input', 'rows': 3, 'placeholder': 'Paste your embedded map iframe code here...'}),
             'image': forms.FileInput(attrs={'class': 'form-input', 'accept': 'image/*'}),
+            'featured': forms.CheckboxInput(attrs={'class': 'form-checkbox'}),
+            'location': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'City or Address'}),
         }
         labels = {
             'name': 'Restaurant Name',
@@ -31,16 +42,22 @@ class RestaurantForm(forms.ModelForm):
             'cuisines': 'Cuisines',
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            self.fields['cuisines'].initial = self.instance.cuisines.all()
+
 
 class DishForm(forms.ModelForm):
     class Meta:
         model = Dish
-        fields = ['name', 'description', 'price', 'image']
+        fields = ['name', 'description', 'price', 'image', 'featured']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Dish Name'}),
             'description': forms.Textarea(attrs={'class': 'form-input', 'rows': 3, 'placeholder': 'Describe the dish...'}),
             'price': forms.NumberInput(attrs={'class': 'form-input', 'step': '0.01', 'min': '0', 'placeholder': '0.00'}),
             'image': forms.FileInput(attrs={'class': 'form-input', 'accept': 'image/*'}),
+            'featured': forms.CheckboxInput(attrs={'class': 'form-checkbox'}),
         }
         labels = {
             'name': 'Dish Name',

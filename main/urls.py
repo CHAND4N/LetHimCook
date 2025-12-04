@@ -11,7 +11,10 @@ urlpatterns = [
     path('restaurant/<int:restaurant_id>/update/', views.update_restaurant, name='update_restaurant'),
     path('restaurant/<int:restaurant_id>/delete/', views.delete_restaurant, name='delete_restaurant'),
     path('restaurant/<int:restaurant_id>/dish/add/', views.add_dish, name='add_dish'),
+    path('dish/<int:dish_id>/', views.dish_detail, name='dish_detail'),
     path('dish/<int:dish_id>/update/', views.update_dish, name='update_dish'),
     path('dish/<int:dish_id>/delete/', views.delete_dish, name='delete_dish'),
+    path('explore/', views.explore, name='explore'),
+    path('allrestaurants/', views.all_restaurants, name='admin_restaurants'),
 ]
 

@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Explore - MealMate{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/explore.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="explore-container">
+
+    <!-- Featured Restaurants Slider -->
+    <section class="slider-section">
+        <h2 class="slider-title">Featured Restaurants</h2>
+        <div class="slider-wrapper" id="restaurant-slider">
+            <button class="slider-arrow left" id="restaurant-prev">&#10094;</button>
+            <div class="slider-track">
+                {% for restaurant in featured_restaurants %}
+                    <div class="slider-card">
+                        <a href="{% url 'main:restaurant_detail' restaurant.id %}" class="card-link">
+                            {% if restaurant.image %}
+                                <img src="{{ restaurant.image.url }}" alt="{{ restaurant.name }}">
+                            {% else %}
+                                <div class="placeholder">No Image</div>
+                            {% endif %}
+                            <h3>{{ restaurant.name }}</h3>
+                        </a>
+                        <div class="restaurant-info-card">
+                            <p><strong>Open:</strong> {{ restaurant.opening_time }} &nbsp; <strong>Close:</strong> {{ restaurant.closing_time }}</p>
+                            <p><strong>Location:</strong> {{ restaurant.location|default:"N/A" }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <button class="slider-arrow right" id="restaurant-next">&#10095;</button>
+        </div>
+    </section>
+
+    <!-- Featured Dishes Slider -->
+    <section class="slider-section">
+        <h2 class="slider-title">Featured Dishes</h2>
+        <div class="slider-wrapper" id="dish-slider">
+            <button class="slider-arrow left" id="dish-prev">&#10094;</button>
+            <div class="slider-track">
+                {% for dish in featured_dishes %}
+                    <div class="slider-card">
+                        <a href="{% url 'main:dish_detail' dish.id %}" class="card-link">
+                            {% if dish.image %}
+                                <img src="{{ dish.image.url }}" alt="{{ dish.name }}">
+                            {% else %}
+                                <div class="placeholder">No Image</div>
+                            {% endif %}
+                            <h3>{{ dish.name }}</h3>
+                        </a>
+                        <div class="dish-info-card">
+                            <span class="dish-price">${{ dish.price }}</span>
+                            <button class="btn btn-primary add-to-cart-btn" data-dish-id="{{ dish.id }}">Add to Cart</button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <button class="slider-arrow right" id="dish-next">&#10095;</button>
+        </div>
+    </section>
+
+    <!-- All Dishes Grid -->
+    <section class="all-dishes">
+        <h2 class="slider-title">All Dishes</h2>
+        <div class="dish-grid">
+            {% for dish in all_dishes %}
+                <div class="dish-card">
+                    <a href="{% url 'main:dish_detail' dish.id %}" class="card-link">
+                        {% if dish.image %}
+                            <img src="{{ dish.image.url }}" alt="{{ dish.name }}">
+                        {% else %}
+                            <div class="placeholder">No Image</div>
+                        {% endif %}
+                        <h3>{{ dish.name }}</h3>
+                    </a>
+                    <div class="dish-info-card">
+                        <span class="dish-price">${{ dish.price }}</span>
+                        <button class="btn btn-primary add-to-cart-btn" data-dish-id="{{ dish.id }}">Add to Cart</button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+</div>
+{% endblock %}

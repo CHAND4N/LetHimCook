@@ -4,16 +4,16 @@
 {% block title %}Delete Dish - MealMate{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/main.css' %}">
+<link rel="stylesheet" href="{% static 'css/delete_confirm.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="delete-confirm">
     <h2>Delete Dish</h2>
     <p>Are you sure you want to delete <strong>{{ dish.name }}</strong> from <strong>{{ restaurant.name }}</strong>?</p>
-    <p style="color: #dc3545; font-weight: 600;">This action cannot be undone.</p>
+    <p class="warning">This action cannot be undone.</p>
     
-    <form method="post" style="margin-top: 2rem;">
+    <form method="post">
         {% csrf_token %}
         <div class="form-actions">
             <button type="submit" class="btn btn-danger">Yes, Delete</button>

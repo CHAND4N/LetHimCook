@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ dish.name }} - {{ dish.restaurant.name }} - MealMate{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dish_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb Navigation -->
+<nav class="breadcrumb">
+    <a href="{% url 'main:home' %}">Home</a>
+    <span class="breadcrumb-separator">›</span>
+    <a href="{% url 'main:restaurant_detail' dish.restaurant.id %}">{{ dish.restaurant.name }}</a>
+    <span class="breadcrumb-separator">›</span>
+    <span class="breadcrumb-current">{{ dish.name }}</span>
+</nav>
+
+<!-- Main Dish Detail Section -->
+<div class="dish-detail-container">
+    <div class="dish-detail-main">
+        <!-- Dish Image -->
+        <div class="dish-image-section">
+            {% if dish.image %}
+                <img src="{{ dish.image.url }}" alt="{{ dish.name }}" class="dish-detail-image">
+            {% else %}
+                <div class="dish-detail-image-placeholder">
+                    <span>No Image Available</span>
+                </div>
+            {% endif %}
+            {% if dish.featured %}
+                <span class="featured-badge">Featured</span>
+            {% endif %}
+        </div>
+
+        <!-- Dish Information -->
+        <div class="dish-info-section">
+            <h1 class="dish-name">{{ dish.name }}</h1>
+            <p class="dish-restaurant">
+                From <a href="{% url 'main:restaurant_detail' dish.restaurant.id %}" class="restaurant-link">{{ dish.restaurant.name }}</a>
+            </p>
+            <p class="dish-description">{{ dish.description }}</p>
+            
+            <div class="dish-price-section">
+                <span class="dish-price">${{ dish.price }}</span>
+            </div>
+
+            <!-- Add to Cart Form -->
+            <form method="post" class="add-to-cart-form">
+                {% csrf_token %}
+                <div class="quantity-selector">
+                    <label for="quantity">Quantity:</label>
+                    <div class="quantity-controls">
+                        <button type="button" class="quantity-btn minus-btn" onclick="decreaseQuantity()">−</button>
+                        <input type="number" id="quantity" name="quantity" value="1" min="1" max="99" class="quantity-input">
+                        <button type="button" class="quantity-btn plus-btn" onclick="increaseQuantity()">+</button>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-add-cart">
+                    <span>Add to Cart</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Other Dishes Section -->
+{% if other_dishes %}
+<div class="other-dishes-section">
+    <h2 class="section-title">Other Dishes from {{ dish.restaurant.name }}</h2>
+    <div class="other-dishes-grid">
+        {% for other_dish in other_dishes %}
+            <a href="{% url 'main:dish_detail' other_dish.id %}" class="other-dish-card">
+                {% if other_dish.image %}
+                    <img src="{{ other_dish.image.url }}" alt="{{ other_dish.name }}" class="other-dish-image">
+                {% else %}
+                    <div class="other-dish-image-placeholder">
+                        <span>No Image</span>
+                    </div>
+                {% endif %}
+                <div class="other-dish-info">
+                    <h3 class="other-dish-name">{{ other_dish.name }}</h3>
+                    <p class="other-dish-price">${{ other_dish.price }}</p>
+                </div>
+                {% if other_dish.featured %}
+                    <span class="featured-badge-small">Featured</span>
+                {% endif %}
+            </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<script>
+function increaseQuantity() {
+    const input = document.getElementById('quantity');
+    const currentValue = parseInt(input.value);
+    if (currentValue < 99) {
+        input.value = currentValue + 1;
+    }
+}
+
+function decreaseQuantity() {
+    const input = document.getElementById('quantity');
+    const currentValue = parseInt(input.value);
+    if (currentValue > 1) {
+        input.value = currentValue - 1;
+    }
+}
+</script>
+{% endblock %}
+

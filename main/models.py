@@ -24,6 +24,8 @@ class Restaurant(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='restaurants')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    featured = models.BooleanField(default=False)
+    location = models.CharField(max_length=255, blank=True)
     
     class Meta:
         ordering = ['-created_at']
@@ -40,6 +42,7 @@ class Dish(models.Model):
     image = models.ImageField(upload_to='dishes/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    featured = models.BooleanField(default=False)
     
     class Meta:
         ordering = ['name']
