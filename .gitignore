@@ -9,7 +9,7 @@ __pycache__/
 myenv/
 env/
 venv/
-
+.env
 # Django
 *.log
 *.pot
