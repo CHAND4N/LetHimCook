@@ -2,7 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import SignupForm, LoginForm
+from .forms import SignupForm, LoginForm, ProfileEditForm
+from .models import Profile
+from main.models import Order
 
 
 def signup_view(request):
@@ -83,4 +85,28 @@ def logout_view(request):
 
 @login_required
 def profile_view(request):
-    return render(request, 'accounts/profile.html', {'user': request.user})
+    """Profile page with editing and order history"""
+    user = request.user
+    
+    # Ensure profile exists
+    profile, created = Profile.objects.get_or_create(user=user)
+    
+    # Get user's order history with related items
+    orders = Order.objects.filter(user=user).prefetch_related('items__dish').order_by('-created_at')
+    
+    if request.method == 'POST':
+        form = ProfileEditForm(request.POST, instance=profile, user=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your profile has been updated successfully!')
+            return redirect('accounts:profile')
+    else:
+        form = ProfileEditForm(instance=profile, user=user)
+    
+    context = {
+        'user': user,
+        'profile': profile,
+        'form': form,
+        'orders': orders,
+    }
+    return render(request, 'accounts/profile.html', context)

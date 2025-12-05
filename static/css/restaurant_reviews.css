@@ -1,0 +1,249 @@
+/* Reviews Container */
+.reviews-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+}
+
+.reviews-header {
+    margin-bottom: 2rem;
+}
+
+.reviews-header-content {
+    margin-bottom: 1.5rem;
+}
+
+.reviews-header-content h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.back-link {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    color: #2c3e50;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.back-link:hover {
+    color: #34495e;
+    text-decoration: underline;
+}
+
+.rating-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.rating-display-large {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.rating-stars-large {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.rating-stars-large .star {
+    font-size: 2rem;
+    color: #ddd;
+    line-height: 1;
+}
+
+.rating-stars-large .star.filled {
+    color: #ffc107;
+}
+
+.rating-stars-large .star.half {
+    color: #ffc107;
+    opacity: 0.7;
+}
+
+.rating-value-large {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-left: 0.5rem;
+}
+
+.rating-count-large {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    color: #6c757d;
+    margin: 0;
+}
+
+/* Reviews List */
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.review-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.review-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    gap: 1rem;
+}
+
+.review-user {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.username {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.review-date {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin: 0;
+}
+
+.review-rating {
+    display: flex;
+    gap: 0.25rem;
+    flex-shrink: 0;
+}
+
+.review-rating .star {
+    font-size: 1.2rem;
+    color: #ddd;
+    line-height: 1;
+}
+
+.review-rating .star.filled {
+    color: #ffc107;
+}
+
+.review-comment {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.review-comment p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    color: #495057;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* No Reviews */
+.no-reviews {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.no-reviews-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.no-reviews h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.no-reviews p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1rem;
+    color: #6c757d;
+    margin-bottom: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .reviews-container {
+        margin: 1rem auto;
+        padding: 0 1rem;
+    }
+
+    .reviews-header-content h1 {
+        font-size: 2rem;
+    }
+
+    .rating-summary {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .rating-summary .btn {
+        width: 100%;
+    }
+
+    .review-header {
+        flex-direction: column;
+    }
+
+    .review-rating {
+        align-self: flex-start;
+    }
+}
+

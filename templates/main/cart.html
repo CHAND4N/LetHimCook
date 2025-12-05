@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Cart - MealMate{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/cart.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="cart-container">
+    <div class="cart-header">
+        <h1 class="cart-title">My Cart</h1>
+        {% if cart_items %}
+            <p class="cart-subtitle">{{ cart_items|length }} item{{ cart_items|length|pluralize }} in your cart</p>
+        {% endif %}
+    </div>
+
+    {% if cart_items %}
+    <div class="cart-content">
+        <!-- Cart Items -->
+        <div class="cart-items-section">
+            {% for item in cart_items %}
+            <div class="cart-item" data-item-id="{{ item.id }}">
+                <!-- Dish Image -->
+                <div class="cart-item-image">
+                    {% if item.dish.image %}
+                        <img src="{{ item.dish.image.url }}" alt="{{ item.dish.name }}">
+                    {% else %}
+                        <div class="cart-item-image-placeholder">
+                            <span>No Image</span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Dish Info -->
+                <div class="cart-item-info">
+                    <h3 class="cart-item-name">
+                        <a href="{% url 'main:dish_detail' item.dish.id %}">{{ item.dish.name }}</a>
+                    </h3>
+                    <p class="cart-item-restaurant">
+                        From <a href="{% url 'main:restaurant_detail' item.dish.restaurant.id %}">{{ item.dish.restaurant.name }}</a>
+                    </p>
+                    <p class="cart-item-price">₹{{ item.dish.price }} each</p>
+                </div>
+
+                <!-- Quantity Controls -->
+                <div class="cart-item-quantity">
+                    <div class="quantity-controls">
+                        <button class="quantity-btn decrement-btn" 
+                                onclick="decrementItem({{ item.id }})" 
+                                aria-label="Decrease quantity">
+                            −
+                        </button>
+                        <span class="quantity-display" id="quantity-{{ item.id }}">{{ item.quantity }}</span>
+                        <button class="quantity-btn increment-btn" 
+                                onclick="incrementItem({{ item.id }})" 
+                                aria-label="Increase quantity">
+                            +
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Subtotal -->
+                <div class="cart-item-subtotal">
+                    <span class="subtotal-label">Subtotal:</span>
+                    <span class="subtotal-amount" id="subtotal-{{ item.id }}">₹{{ item.get_subtotal|floatformat:2 }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Cart Summary -->
+        <div class="cart-summary">
+            <div class="summary-card">
+                <h2 class="summary-title">Order Summary</h2>
+                <div class="summary-details">
+                    <div class="summary-row">
+                        <span class="summary-label">Items:</span>
+                        <span class="summary-value" id="total-items">{{ cart_items|length }}</span>
+                    </div>
+                    <div class="summary-divider"></div>
+                    <div class="summary-row total-row">
+                        <span class="summary-label">Total:</span>
+                        <span class="summary-value total-amount" id="cart-total">₹{{ total|floatformat:2 }}</span>
+                    </div>
+                </div>
+                <div class="summary-actions">
+                    <a href="{% url 'main:explore' %}" class="btn btn-outline">Continue Shopping</a>
+                    <a href="{% url 'main:create_checkout_session' %}" class="btn btn-primary checkout-btn">Checkout with Stripe</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <!-- Empty Cart State -->
+    <div class="empty-cart">
+        <div class="empty-cart-icon">🛒</div>
+        <h2 class="empty-cart-title">Your cart is empty</h2>
+        <p class="empty-cart-message">Start adding delicious dishes to your cart!</p>
+        <a href="{% url 'main:explore' %}" class="btn btn-primary">Explore Dishes</a>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function incrementItem(itemId) {
+    fetch(`/cart/item/${itemId}/increment/?ajax=1`, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById(`quantity-${itemId}`).textContent = data.quantity;
+            document.getElementById(`subtotal-${itemId}`).textContent = `₹${data.subtotal.toFixed(2)}`;
+            document.getElementById('cart-total').textContent = `₹${data.total.toFixed(2)}`;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        location.reload();
+    });
+}
+
+function decrementItem(itemId) {
+    fetch(`/cart/item/${itemId}/decrement/?ajax=1`, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (data.removed) {
+                // Remove item from DOM
+                const itemElement = document.querySelector(`[data-item-id="${itemId}"]`);
+                if (itemElement) {
+                    itemElement.style.transition = 'opacity 0.3s ease';
+                    itemElement.style.opacity = '0';
+                    setTimeout(() => {
+                        itemElement.remove();
+                        // Check if cart is now empty
+                        const remainingItems = document.querySelectorAll('.cart-item');
+                        if (remainingItems.length === 0) {
+                            location.reload();
+                        } else {
+                            // Update total items count
+                            document.getElementById('total-items').textContent = remainingItems.length;
+                        }
+                    }, 300);
+                }
+            } else {
+                document.getElementById(`quantity-${itemId}`).textContent = data.quantity;
+                document.getElementById(`subtotal-${itemId}`).textContent = `₹${data.subtotal.toFixed(2)}`;
+            }
+            document.getElementById('cart-total').textContent = `₹${data.total.toFixed(2)}`;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        location.reload();
+    });
+}
+</script>
+{% endblock %}
+

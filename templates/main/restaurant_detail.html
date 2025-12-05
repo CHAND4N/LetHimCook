@@ -71,6 +71,45 @@
             {{ restaurant.iframe_location|safe }}
         </div>
     {% endif %}
+
+    <!-- Rating Section -->
+    <div class="restaurant-rating-section">
+        <a href="{% url 'main:restaurant_reviews' restaurant.id %}" class="rating-link">
+            <div class="rating-display">
+                <div class="rating-stars" data-rating="{{ restaurant.get_average_rating|default:0 }}">
+                    {% with avg_rating=restaurant.get_average_rating %}
+                        {% if avg_rating %}
+                            {% for i in "12345" %}
+                                <span class="star" data-star="{{ forloop.counter }}">★</span>
+                            {% endfor %}
+                            <span class="rating-value">{{ avg_rating|floatformat:1 }} / 5</span>
+                        {% else %}
+                            {% for i in "12345" %}
+                                <span class="star">★</span>
+                            {% endfor %}
+                            <span class="rating-value">No ratings yet</span>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+                <div class="rating-count">
+                    {% with count=restaurant.get_reviews_count %}
+                        {% if count == 0 %}
+                            <span class="no-reviews">Be the first to review!</span>
+                        {% else %}
+                            <span>{{ count }} review{{ count|pluralize }}</span>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+        </a>
+        {% if user.is_authenticated %}
+            {% if not restaurant.has_user_reviewed %}
+                <a href="{% url 'main:create_review' restaurant.id %}" class="btn btn-primary btn-sm">Write a Review</a>
+            {% else %}
+                <a href="{% url 'main:create_review' restaurant.id %}" class="btn btn-outline btn-sm">Update Your Review</a>
+            {% endif %}
+        {% endif %}
+    </div>
 </div>
 
 <div>
@@ -91,7 +130,7 @@
                             {% endif %}
                             <div class="dish-card-body">
                                 <h3 class="truncate-text">{{ dish.name }}</h3>
-                                <div class="dish-price">${{ dish.price }}</div>
+                                <div class="dish-price">₹{{ dish.price }}</div>
                                 {% if can_edit %}
                                     <div class="dish-actions">
                                         <a href="{% url 'main:update_dish' dish.id %}" class="btn btn-outline btn-sm">Update</a>
@@ -114,4 +153,29 @@
         </div>
     {% endif %}
 </div>
+
+<script>
+// Update star display based on average rating
+document.addEventListener('DOMContentLoaded', function() {
+    const ratingStars = document.querySelector('.rating-stars[data-rating]');
+    if (ratingStars) {
+        const avgRating = parseFloat(ratingStars.getAttribute('data-rating'));
+        if (avgRating > 0) {
+            const stars = ratingStars.querySelectorAll('.star[data-star]');
+            stars.forEach(star => {
+                const starNum = parseInt(star.getAttribute('data-star'));
+                star.classList.remove('filled', 'half');
+                
+                if (starNum <= Math.floor(avgRating)) {
+                    // Fully filled star
+                    star.classList.add('filled');
+                } else if (starNum - 1 < avgRating && avgRating < starNum) {
+                    // Half-filled star (e.g., rating is 3.5, starNum is 4)
+                    star.classList.add('half');
+                }
+            });
+        }
+    }
+});
+</script>
 {% endblock %}

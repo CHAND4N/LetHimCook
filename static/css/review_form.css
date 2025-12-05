@@ -1,0 +1,149 @@
+/* Review Form Container */
+.review-form-container {
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+}
+
+.review-form-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.review-form-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.restaurant-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1rem;
+    color: #6c757d;
+    margin: 0;
+}
+
+.review-form-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Star Rating */
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.star-rating input[type="radio"] {
+    display: none;
+}
+
+.star-label {
+    font-size: 2.5rem;
+    color: #ddd;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+    line-height: 1;
+}
+
+.star-label:hover,
+.star-label.hover {
+    color: #ffc107;
+    transform: scale(1.1);
+}
+
+.star-label.active {
+    color: #ffc107;
+}
+
+/* Remove default radio button styling effects */
+.star-rating input[type="radio"]:checked ~ .star-label {
+    /* Let JS handle the active class instead */
+}
+
+.rating-hint {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin: 0.5rem 0 0 0;
+}
+
+/* Form Elements */
+.form-group {
+    margin-bottom: 2rem;
+}
+
+.form-group label {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.75rem;
+}
+
+.form-textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    resize: vertical;
+    transition: border-color 0.3s ease;
+}
+
+.form-textarea:focus {
+    outline: none;
+    border-color: #2c3e50;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+}
+
+.form-actions .btn {
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    border-radius: 8px;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .review-form-container {
+        margin: 1rem auto;
+        padding: 0 1rem;
+    }
+
+    .review-form-header h1 {
+        font-size: 2rem;
+    }
+
+    .review-form-card {
+        padding: 1.5rem;
+    }
+
+    .star-label {
+        font-size: 2rem;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .form-actions .btn {
+        width: 100%;
+    }
+}
+

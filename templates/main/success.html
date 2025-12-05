@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order Confirmed - MealMate{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/cart.css' %}">
+<style>
+    .success-container {
+        max-width: 900px;
+        margin: 3rem auto;
+        padding: 0 1.5rem;
+    }
+
+    .success-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .success-icon {
+        font-size: 5rem;
+        color: #28a745;
+        margin-bottom: 1rem;
+    }
+
+    .success-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+    }
+
+    .success-message {
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.1rem;
+        color: #6c757d;
+    }
+
+    .order-summary-card {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .order-number {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+    }
+
+    .order-status {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .status-paid {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .order-items {
+        margin-bottom: 2rem;
+    }
+
+    .order-item {
+        display: grid;
+        grid-template-columns: 80px 1fr auto;
+        gap: 1.5rem;
+        padding: 1.5rem 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .order-item:last-child {
+        border-bottom: none;
+    }
+
+    .order-item-image {
+        width: 80px;
+        height: 80px;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #f8f9fa;
+    }
+
+    .order-item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .order-item-image-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+        color: #6c757d;
+        font-size: 0.75rem;
+    }
+
+    .order-item-info h4 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .order-item-info p {
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin: 0.25rem 0;
+    }
+
+    .order-item-price {
+        text-align: right;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #2c3e50;
+    }
+
+    .order-total {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 1.5rem;
+        border-top: 2px solid #e9ecef;
+        margin-top: 1.5rem;
+    }
+
+    .order-total-label {
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .order-total-amount {
+        font-family: 'Playfair Display', serif;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2c3e50;
+    }
+
+    .success-actions {
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .success-actions .btn {
+        margin: 0 0.5rem;
+    }
+
+    @media (max-width: 640px) {
+        .success-container {
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .success-title {
+            font-size: 2rem;
+        }
+
+        .order-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .order-item {
+            grid-template-columns: 60px 1fr;
+            gap: 1rem;
+        }
+
+        .order-item-price {
+            grid-column: 1 / -1;
+            text-align: left;
+            padding-top: 0.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="success-container">
+    <div class="success-header">
+        <div class="success-icon">✓</div>
+        <h1 class="success-title">Order Confirmed!</h1>
+        <p class="success-message">Thank you for your order. We've received your payment and will process it shortly.</p>
+    </div>
+
+    <div class="order-summary-card">
+        <div class="order-header">
+            <div>
+                <div class="order-number">Order #{{ order.id }}</div>
+                <p style="font-family: 'Poppins', sans-serif; font-size: 0.9rem; color: #6c757d; margin: 0.5rem 0 0 0;">
+                    Placed on {{ order.created_at|date:"F d, Y g:i A" }}
+                </p>
+            </div>
+            <span class="order-status status-paid">{{ order.get_payment_status_display }}</span>
+        </div>
+
+        <div class="order-items">
+            {% for item in order_items %}
+            <div class="order-item">
+                <div class="order-item-image">
+                    {% if item.dish.image %}
+                        <img src="{{ item.dish.image.url }}" alt="{{ item.dish.name }}">
+                    {% else %}
+                        <div class="order-item-image-placeholder">
+                            <span>No Image</span>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="order-item-info">
+                    <h4>{{ item.dish.name }}</h4>
+                    <p>From {{ item.dish.restaurant.name }}</p>
+                    <p>Quantity: {{ item.quantity }} × ₹{{ item.price|floatformat:2 }}</p>
+                </div>
+                <div class="order-item-price">
+                    ₹{{ item.get_subtotal|floatformat:2 }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="order-total">
+            <span class="order-total-label">Total:</span>
+            <span class="order-total-amount">₹{{ order.total_price|floatformat:2 }}</span>
+        </div>
+    </div>
+
+    <div class="success-actions">
+        <a href="{% url 'main:explore' %}" class="btn btn-primary">Continue Shopping</a>
+        <a href="{% url 'main:home' %}" class="btn btn-outline">Back to Home</a>
+    </div>
+</div>
+{% endblock %}
+

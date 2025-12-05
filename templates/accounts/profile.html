@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Profile - MealMate{% endblock %}
+{% block title %}My Profile - MealMate{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/profile.css' %}">
@@ -9,28 +9,130 @@
 
 {% block content %}
 <div class="profile-container">
-    <h2>My Profile</h2>
-    
-    <div class="profile-info">
-        <label>Username:</label>
-        <p>{{ user.username }}</p>
+    <div class="profile-header">
+        <h1 class="profile-title">My Profile</h1>
+        <p class="profile-subtitle">Manage your account information and view order history</p>
     </div>
-    
-    <div class="profile-info">
-        <label>Email:</label>
-        <p>{{ user.email }}</p>
+
+    <!-- Profile Edit Form -->
+    <div class="profile-section">
+        <h2 class="section-title">Personal Information</h2>
+        <form method="post" class="profile-form">
+            {% csrf_token %}
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}">Username *</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <div class="error-message">{{ form.username.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}">Email *</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <div class="error-message">{{ form.email.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.first_name.id_for_label }}">First Name</label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}
+                        <div class="error-message">{{ form.first_name.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.last_name.id_for_label }}">Last Name</label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}
+                        <div class="error-message">{{ form.last_name.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.phone_number.id_for_label }}">Phone Number</label>
+                    {{ form.phone_number }}
+                    {% if form.phone_number.errors %}
+                        <div class="error-message">{{ form.phone_number.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.gender.id_for_label }}">Gender</label>
+                    {{ form.gender }}
+                    {% if form.gender.errors %}
+                        <div class="error-message">{{ form.gender.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.address.id_for_label }}">Address</label>
+                {{ form.address }}
+                {% if form.address.errors %}
+                    <div class="error-message">{{ form.address.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
     </div>
-    
-    {% if user.profile %}
-        <div class="profile-info">
-            <label>Phone Number:</label>
-            <p>{{ user.profile.phone_number }}</p>
-        </div>
+
+    <!-- Order History Section -->
+    <div class="profile-section">
+        <h2 class="section-title">Order History</h2>
         
-        <div class="profile-info">
-            <label>Role:</label>
-            <p>{{ user.profile.get_role_display }}</p>
-        </div>
-    {% endif %}
+        {% if orders %}
+            <div class="orders-list">
+                {% for order in orders %}
+                <div class="order-card">
+                    <div class="order-header">
+                        <div class="order-info">
+                            <h3 class="order-number">Order #{{ order.id }}</h3>
+                            <p class="order-date">{{ order.created_at|date:"F d, Y g:i A" }}</p>
+                        </div>
+                        <div class="order-status-badge">
+                            <span class="status-badge status-{{ order.payment_status|lower }}">{{ order.get_payment_status_display }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="order-items">
+                        <h4>Items:</h4>
+                        <ul class="items-list">
+                            {% for item in order.items.all %}
+                            <li class="order-item">
+                                <span class="item-name">{{ item.dish.name }}</span>
+                                <span class="item-quantity">× {{ item.quantity }}</span>
+                                <span class="item-price">₹{{ item.get_subtotal|floatformat:2 }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    
+                    <div class="order-total">
+                        <strong>Total: ₹{{ order.total_price|floatformat:2 }}</strong>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-orders">
+                <div class="empty-icon">📦</div>
+                <h3>No Orders Yet</h3>
+                <p>You haven't placed any orders yet. Start exploring our delicious dishes!</p>
+                <a href="{% url 'main:explore' %}" class="btn btn-primary">Explore Dishes</a>
+            </div>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

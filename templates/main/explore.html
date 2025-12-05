@@ -54,7 +54,7 @@
                             <h3>{{ dish.name }}</h3>
                         </a>
                         <div class="dish-info-card">
-                            <span class="dish-price">${{ dish.price }}</span>
+                            <span class="dish-price">₹{{ dish.price }}</span>
                             <button class="btn btn-primary add-to-cart-btn" data-dish-id="{{ dish.id }}">Add to Cart</button>
                         </div>
                     </div>
@@ -79,7 +79,7 @@
                         <h3>{{ dish.name }}</h3>
                     </a>
                     <div class="dish-info-card">
-                        <span class="dish-price">${{ dish.price }}</span>
+                        <span class="dish-price">₹{{ dish.price }}</span>
                         <button class="btn btn-primary add-to-cart-btn" data-dish-id="{{ dish.id }}">Add to Cart</button>
                     </div>
                 </div>
@@ -88,4 +88,70 @@
     </section>
 
 </div>
+
+<script>
+// Get CSRF token from cookies
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle Add to Cart buttons
+    const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+    
+    addToCartButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const dishId = this.getAttribute('data-dish-id');
+            
+            // Get CSRF token
+            const csrftoken = getCookie('csrftoken');
+            
+            // Create form data
+            const formData = new FormData();
+            formData.append('quantity', '1');
+            if (csrftoken) {
+                formData.append('csrfmiddlewaretoken', csrftoken);
+            }
+            
+            // Send AJAX request
+            fetch(`/cart/add/${dishId}/?ajax=1`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': csrftoken || ''
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success message (you can customize this)
+                    alert(data.message || 'Item added to cart!');
+                    // Optionally update cart icon/count if you have one
+                } else {
+                    alert('Failed to add item to cart. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Fallback: redirect to add to cart URL
+                window.location.href = `/cart/add/${dishId}/`;
+            });
+        });
+    });
+});
+</script>
 {% endblock %}

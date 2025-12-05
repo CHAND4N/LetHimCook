@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Write a Review - {{ restaurant.name }} - MealMate{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/review_form.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="review-form-container">
+    <div class="review-form-header">
+        <h1>Write a Review</h1>
+        <p class="restaurant-name">{{ restaurant.name }}</p>
+    </div>
+
+    <div class="review-form-card">
+        <form method="post" class="review-form">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="rating">Rating *</label>
+                <div class="star-rating">
+                    <input type="radio" id="star5" name="rating" value="5" {% if existing_review and existing_review.rating == 5 %}checked{% endif %}>
+                    <label for="star5" class="star-label">★</label>
+                    <input type="radio" id="star4" name="rating" value="4" {% if existing_review and existing_review.rating == 4 %}checked{% endif %}>
+                    <label for="star4" class="star-label">★</label>
+                    <input type="radio" id="star3" name="rating" value="3" {% if existing_review and existing_review.rating == 3 %}checked{% endif %}>
+                    <label for="star3" class="star-label">★</label>
+                    <input type="radio" id="star2" name="rating" value="2" {% if existing_review and existing_review.rating == 2 %}checked{% endif %}>
+                    <label for="star2" class="star-label">★</label>
+                    <input type="radio" id="star1" name="rating" value="1" {% if existing_review and existing_review.rating == 1 %}checked{% endif %} required>
+                    <label for="star1" class="star-label">★</label>
+                </div>
+                <p class="rating-hint">Click on a star to rate</p>
+            </div>
+
+            <div class="form-group">
+                <label for="comment">Your Review (Optional)</label>
+                <textarea 
+                    id="comment" 
+                    name="comment" 
+                    rows="6" 
+                    class="form-textarea" 
+                    placeholder="Share your experience at {{ restaurant.name }}...">{{ existing_review.comment|default:"" }}</textarea>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'main:restaurant_detail' restaurant.id %}" class="btn btn-outline">Cancel</a>
+                <button type="submit" class="btn btn-primary">Submit Review</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Star rating interaction
+document.addEventListener('DOMContentLoaded', function() {
+    const starContainer = document.querySelector('.star-rating');
+    const stars = Array.from(starContainer.querySelectorAll('input[type="radio"]'));
+    const starLabels = Array.from(starContainer.querySelectorAll('.star-label'));
+    
+    // Since stars are in reverse order (5 to 1), we need to reverse the array for proper indexing
+    const reversedStars = [...stars].reverse();
+    const reversedLabels = [...starLabels].reverse();
+    
+    let selectedRating = 0;
+    
+    // Get initial selected rating
+    const checkedStar = starContainer.querySelector('input[type="radio"]:checked');
+    if (checkedStar) {
+        selectedRating = parseInt(checkedStar.value);
+        updateStarDisplay(selectedRating);
+    }
+    
+    // Add hover and click handlers to labels
+    reversedLabels.forEach((label, index) => {
+        const rating = index + 1;
+        const starInput = reversedStars[index];
+        
+        label.addEventListener('mouseenter', function() {
+            highlightStars(rating);
+        });
+        
+        label.addEventListener('click', function() {
+            selectedRating = rating;
+            updateStarDisplay(selectedRating);
+        });
+    });
+    
+    // Handle mouse leave - restore to selected rating
+    starContainer.addEventListener('mouseleave', function() {
+        updateStarDisplay(selectedRating);
+    });
+    
+    // Update display based on rating (1-5)
+    function updateStarDisplay(rating) {
+        reversedLabels.forEach((label, index) => {
+            const starRating = index + 1;
+            label.classList.remove('active', 'hover');
+            if (starRating <= rating) {
+                label.classList.add('active');
+            }
+        });
+    }
+    
+    // Highlight stars on hover
+    function highlightStars(rating) {
+        reversedLabels.forEach((label, index) => {
+            const starRating = index + 1;
+            label.classList.remove('hover');
+            if (starRating <= rating) {
+                label.classList.add('hover');
+            }
+        });
+    }
+    
+    // Update when radio button changes (for form submission)
+    stars.forEach(star => {
+        star.addEventListener('change', function() {
+            selectedRating = parseInt(this.value);
+            updateStarDisplay(selectedRating);
+        });
+    });
+});
+</script>
+{% endblock %}
+

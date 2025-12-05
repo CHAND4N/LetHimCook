@@ -43,11 +43,11 @@
             <p class="dish-description">{{ dish.description }}</p>
             
             <div class="dish-price-section">
-                <span class="dish-price">${{ dish.price }}</span>
+                <span class="dish-price">₹{{ dish.price }}</span>
             </div>
 
             <!-- Add to Cart Form -->
-            <form method="post" class="add-to-cart-form">
+            <form method="post" action="{% url 'main:add_to_cart' dish.id %}" class="add-to-cart-form">
                 {% csrf_token %}
                 <div class="quantity-selector">
                     <label for="quantity">Quantity:</label>
@@ -81,7 +81,7 @@
                 {% endif %}
                 <div class="other-dish-info">
                     <h3 class="other-dish-name">{{ other_dish.name }}</h3>
-                    <p class="other-dish-price">${{ other_dish.price }}</p>
+                    <p class="other-dish-price">₹{{ other_dish.price }}</p>
                 </div>
                 {% if other_dish.featured %}
                     <span class="featured-badge-small">Featured</span>

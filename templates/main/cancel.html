@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Payment Cancelled - MealMate{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/cart.css' %}">
+<style>
+    .cancel-container {
+        max-width: 600px;
+        margin: 4rem auto;
+        padding: 0 1.5rem;
+        text-align: center;
+    }
+
+    .cancel-icon {
+        font-size: 5rem;
+        color: #dc3545;
+        margin-bottom: 1.5rem;
+        opacity: 0.7;
+    }
+
+    .cancel-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+    }
+
+    .cancel-message {
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.1rem;
+        color: #6c757d;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .cancel-card {
+        background: white;
+        border-radius: 12px;
+        padding: 2.5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+
+    .cancel-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .cancel-actions .btn {
+        min-width: 150px;
+    }
+
+    @media (max-width: 640px) {
+        .cancel-container {
+            margin: 2rem auto;
+        }
+
+        .cancel-title {
+            font-size: 2rem;
+        }
+
+        .cancel-card {
+            padding: 1.5rem;
+        }
+
+        .cancel-actions {
+            flex-direction: column;
+        }
+
+        .cancel-actions .btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="cancel-container">
+    <div class="cancel-card">
+        <div class="cancel-icon">✕</div>
+        <h1 class="cancel-title">Payment Cancelled</h1>
+        <p class="cancel-message">
+            Your payment was cancelled. No charges have been made to your account.
+            Your items are still in your cart, so you can complete your purchase anytime.
+        </p>
+        <div class="cancel-actions">
+            <a href="{% url 'main:cart_page' %}" class="btn btn-primary">Return to Cart</a>
+            <a href="{% url 'main:explore' %}" class="btn btn-outline">Continue Shopping</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
