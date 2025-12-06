@@ -607,3 +607,6 @@ def restaurant_reviews(request, restaurant_id):
         'user_has_reviewed': user_has_reviewed,
     }
     return render(request, 'main/restaurant_reviews.html', context)
+
+def about_us(request):
+    return render(request, 'main/about_us.html')

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}About Us - MealMate{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/about_us.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="hero">
+    <h1>Welcome to MealMate</h1>
+    <p>Your trusted companion for fast, reliable, and delicious food ordering.</p>
+</section>
+
+<!-- Our Story -->
+<section class="section story">
+    <h2>Our Story</h2>
+    <p>
+        MealMate was created with one simple belief — great food should be easy to get.
+        Whether it’s a busy workday, a late-night craving, or a family meal,
+        MealMate connects you to your favorite dishes with smooth ordering and reliable delivery.
+        Our goal is to make food ordering effortless and joyful.
+    </p>
+</section>
+
+<!-- Values -->
+<section class="section values">
+    <h2>What We Believe</h2>
+    <div class="value-boxes">
+        <div class="box">
+            <h3>Quality</h3>
+            <p>We ensure every meal is prepared with care and delivered fresh.</p>
+        </div>
+        <div class="box">
+            <h3>Speed</h3>
+            <p>We optimize delivery routes to get your food to you quickly.</p>
+        </div>
+        <div class="box">
+            <h3>Customer Happiness</h3>
+            <p>Every feature is designed to give you the best ordering experience.</p>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

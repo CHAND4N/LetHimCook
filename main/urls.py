@@ -26,5 +26,6 @@ urlpatterns = [
     path('webhooks/stripe/', views.stripe_webhook, name='stripe_webhook'),
     path('restaurant/<int:restaurant_id>/review/', views.create_review, name='create_review'),
     path('restaurant/<int:restaurant_id>/reviews/', views.restaurant_reviews, name='restaurant_reviews'),
+    path('about/', views.about_us, name='about_us'),
 ]
 
